@@ -12,12 +12,12 @@ python3 -m venv venv
 
 Activate it with
 ```
-source .venv/bin/activate
+source venv/bin/activate
 ```
 
 Install all required packages with (this will couple of minutes)
 ```
-pip3 install torch torchvision numpy pandas wfdb ast scikit-learn matplotlib jupyter
+pip3 install torch torchvision numpy pandas wfdb scikit-learn matplotlib jupyter
 ```
 
 Before training the model, extract the file: `ptb-xl-data.zip` into `ptb-xl-data` directory
