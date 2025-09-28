@@ -2,8 +2,13 @@ from PTBXLModel import PTBXLModel
 import torch
 from data_loader import load_model_train_and_test_data
 
+device = torch.device("cpu")
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+
 model = PTBXLModel()
-X_train, X_test, y_train, y_test = load_model_train_and_test_data()
+model.to(device=device)
+X_train, X_test, y_train, y_test = load_model_train_and_test_data(device)
 
 output_filename = 'ptb-xl-trained-seq100-age35-50.pt'
 

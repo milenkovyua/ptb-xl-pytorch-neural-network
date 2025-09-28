@@ -40,7 +40,7 @@ def aggregate_diagnostic_by_report(report: str):
 
     return list(set(tmp))
 
-def load_model_train_and_test_data(min_age=35, max_age=50, data_frequence=100, path = './ptb-xl-data/'):
+def load_model_train_and_test_data(device, min_age=35, max_age=50, data_frequence=100, path = './ptb-xl-data/'):
     sampling_rate=data_frequence
 
     # load and convert annotation data
@@ -94,12 +94,12 @@ def load_model_train_and_test_data(min_age=35, max_age=50, data_frequence=100, p
     X_train, X_test, y_train, y_test = train_test_split(X_tmp, y_tmp, test_size=0.1, random_state=29)
 
     # Convert X features to float tensors
-    X_train = torch.FloatTensor(np.asarray(X_train))
-    X_test = torch.FloatTensor(np.asarray(X_test))
+    X_train = torch.FloatTensor(np.asarray(X_train)).to(device)
+    X_test = torch.FloatTensor(np.asarray(X_test)).to(device)
     # convert the y labels to tensors long
     # y_train = torch.LongTensor(np.concatenate(y_train))
-    y_train = torch.LongTensor(y_train)
-    y_test = torch.LongTensor(y_test)
+    y_train = torch.LongTensor(y_train).to(device)
+    y_test = torch.LongTensor(y_test).to(device)
 
     return X_train, X_test, y_train, y_test
 

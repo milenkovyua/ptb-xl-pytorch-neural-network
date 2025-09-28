@@ -61,9 +61,14 @@ class Model(nn.Module):
 # Pick manual seed for randomization
 torch.manual_seed(29)
 
+device = torch.device("cpu")
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+
 # Instantiate our model
 
 model = Model()
+model.to(device=device)
 
 def load_raw_data(df, sampling_rate, path):
     if sampling_rate == 100:
@@ -144,16 +149,16 @@ y_tmp = y_f
 X_train, X_test, y_train, y_test = train_test_split(X_tmp, y_tmp, test_size=0.1, random_state=29)
 
 # Convert X features to float tensors
-X_train = torch.FloatTensor(np.asarray(X_train))
-X_test = torch.FloatTensor(np.asarray(X_test))
+X_train = torch.FloatTensor(np.asarray(X_train)).to(device)
+X_test = torch.FloatTensor(np.asarray(X_test)).to(device)
 # convert the y labels to tensors long
 # y_train = torch.LongTensor(np.concatenate(y_train))
-y_train = torch.LongTensor(y_train)
-y_test = torch.LongTensor(y_test)
+y_train = torch.LongTensor(y_train).to(device)
+y_test = torch.LongTensor(y_test).to(device)
 
 # set the criterion/deviation of model to measure the error
 # or how far off the predictions are from the data
-criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLoss().to(device)
 
 # Choose Adam optimizer - lr is learning rate
 optimizer = torch.optim.Adam(model.parameters(), lr=0.00001 )
@@ -161,7 +166,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.00001 )
 
 
 # Train our model
-epochs = 100 # we want to print the result from the 100th epoch as well so we are doing 100 + 1 iterations
+epochs = 150 # we want to print the result from the 100th epoch as well so we are doing 100 + 1 iterations
 loses = []
 
 for i in range(epochs):
@@ -172,11 +177,12 @@ for i in range(epochs):
     loss = criterion(y_pred, y_train)
 
     # keep track of our loses
-    loses.append(loss.detach().numpy())
+    cpuLoss = loss.cpu()
+    loses.append(cpuLoss.detach().numpy())
 
     # print every 10 epochs
     if (i+1) % 10 == 0 or i == 0:
-        print(f'Epoch: {i+1} and loss is: {loss:.7f}')
+        print(f'Epoch: {i+1} and loss is: {cpuLoss:.7f}')
 
     # Do some backpropagation: take the error rate of forward propagation and feed it back
     # thru the network to fine tune the weights
